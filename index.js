@@ -54,6 +54,7 @@ app.post('/lead', async (req, res) => {
 const email = req.body.email || req.body.Email || req.body['your-email'] || req.body.emailaddress || '';
 const message = req.body.message || req.body.Message || req.body['your-message'] || req.body.comments || '';
 
+console.log('FORM DATA RECEIVED:', JSON.stringify(req.body));
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing name, email, or message' });
   }
