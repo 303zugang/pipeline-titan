@@ -123,6 +123,60 @@ app.post('/reply', async (req, res) => {
   }
 });
 
+app.post('/demo', async (req, res) => {
+  const fields = await parseForm(req);
+  console.log('DEMO FIELDS:', JSON.stringify(fields));
+
+  const name = fields.name || fields.Name || '';
+  const email = fields.email || fields.Email || '';
+  const message = fields.message || fields.Message || '';
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Missing name, email, or message' });
+  }
+
+  try {
+    db.prepare(`
+      INSERT INTO leads (name, email, message, status, last_contact)
+      VALUES (?, ?, ?, 'demo', datetime('now'))
+    `).run(name, email, message);
+  } catch (e) {
+    db.prepare(`
+      UPDATE leads SET message=?, status='demo', last_contact=datetime('now') WHERE email=?
+    `).run(message, email);
+  }
+
+  try {
+    const aiReply = await callClaude(inboundPrompt(name, message));
+    await sendEmail(email, `Re: your inquiry`, aiReply);
+    console.log(`DEMO: Sent instant response to ${name} <${email}>`);
+  } catch (err) {
+    console.error('DEMO: Error sending instant response:', err);
+  }
+
+  setTimeout(async () => {
+    try {
+      const followup1 = await callClaude(followupPrompt(name, 1));
+      await sendEmail(email, `Checking in`, followup1);
+      console.log(`DEMO: Sent follow-up #1 to ${name} <${email}>`);
+    } catch (err) {
+      console.error('DEMO: Error sending follow-up #1:', err);
+    }
+  }, 2 * 60 * 1000);
+
+  setTimeout(async () => {
+    try {
+      const followup2 = await callClaude(followupPrompt(name, 2));
+      await sendEmail(email, `One last thought`, followup2);
+      console.log(`DEMO: Sent follow-up #2 to ${name} <${email}>`);
+    } catch (err) {
+      console.error('DEMO: Error sending follow-up #2:', err);
+    }
+  }, 4 * 60 * 1000);
+
+  res.json({ success: true, message: 'Demo started — watch your inbox' });
+});
+
 app.get('/leads', (req, res) => {
   const leads = db.prepare(`SELECT * FROM leads ORDER BY created_at DESC`).all();
   res.json(leads);
