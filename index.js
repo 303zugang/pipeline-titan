@@ -50,7 +50,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/lead', async (req, res) => {
-  const { name, email, message } = req.body;
+  const name = req.body.name || req.body.Name || req.body['your-name'] || req.body.fullname || '';
+const email = req.body.email || req.body.Email || req.body['your-email'] || req.body.emailaddress || '';
+const message = req.body.message || req.body.Message || req.body['your-message'] || req.body.comments || '';
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing name, email, or message' });
