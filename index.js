@@ -8,6 +8,20 @@ const { SYSTEM, inboundPrompt, followupPrompt, replyPrompt } = require('./prompt
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    let data = '';
+    req.on('data', chunk => data += chunk);
+    req.on('end', () => {
+      try { req.body = JSON.parse(data); } catch(e) {
+        const params = new URLSearchParams(data);
+        req.body = Object.fromEntries(params);
+      }
+      next();
+    });
+  } else next();
+});
+
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
