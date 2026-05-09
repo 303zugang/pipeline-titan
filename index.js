@@ -15,7 +15,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function callClaude(userPrompt) {
   const msg = await claude.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-opus-4-5',
     max_tokens: 300,
     system: SYSTEM,
     messages: [{ role: 'user', content: userPrompt }]
