@@ -2,26 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const { Resend } = require('resend');
+const busboy = require('busboy');
 const db = require('./db');
 const { SYSTEM, inboundPrompt, followupPrompt, replyPrompt } = require('./prompts');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  if (!req.body || Object.keys(req.body).length === 0) {
-    let data = '';
-    req.on('data', chunk => data += chunk);
-    req.on('end', () => {
-      try { req.body = JSON.parse(data); } catch(e) {
-        const params = new URLSearchParams(data);
-        req.body = Object.fromEntries(params);
-      }
-      next();
-    });
-  } else next();
-});
-
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -45,16 +32,35 @@ async function sendEmail(to, subject, body) {
   });
 }
 
+function parseForm(req) {
+  return new Promise((resolve, reject) => {
+    const fields = {};
+    const contentType = req.headers['content-type'] || '';
+
+    if (contentType.includes('multipart/form-data')) {
+      const bb = busboy({ headers: req.headers });
+      bb.on('field', (name, val) => { fields[name] = val; });
+      bb.on('close', () => resolve(fields));
+      bb.on('error', reject);
+      req.pipe(bb);
+    } else {
+      resolve(req.body || {});
+    }
+  });
+}
+
 app.get('/', (req, res) => {
   res.json({ status: 'PipelineTitan is running' });
 });
 
 app.post('/lead', async (req, res) => {
-  const name = req.body.name || req.body.Name || req.body['your-name'] || req.body.fullname || '';
-const email = req.body.email || req.body.Email || req.body['your-email'] || req.body.emailaddress || '';
-const message = req.body.message || req.body.Message || req.body['your-message'] || req.body.comments || '';
+  const fields = await parseForm(req);
+  console.log('PARSED FIELDS:', JSON.stringify(fields));
 
-console.log('FORM DATA RECEIVED:', JSON.stringify(req.body));
+  const name = fields.name || fields.Name || '';
+  const email = fields.email || fields.Email || '';
+  const message = fields.message || fields.Message || '';
+
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing name, email, or message' });
   }
@@ -86,13 +92,10 @@ app.post('/reply', async (req, res) => {
   const email = (from?.match(/<(.+)>/) || [])[1] || from;
 
   const lead = db.prepare(`SELECT * FROM leads WHERE email = ?`).get(email);
-  if (!lead) {
-    return res.status(404).json({ error: 'Lead not found' });
-  }
+  if (!lead) return res.status(404).json({ error: 'Lead not found' });
 
   try {
     const raw = await callClaude(replyPrompt(lead.name, text));
-
     let intent = 'interested';
     let reply = raw;
 
@@ -102,8 +105,7 @@ app.post('/reply', async (req, res) => {
     if (intentMatch) intent = intentMatch[1].toLowerCase();
     if (emailMatch) reply = emailMatch[1].trim();
 
-    const newStatus =
-      intent === 'wrong_person' || intent === 'not_now' ? 'dead' : 'replied';
+    const newStatus = intent === 'wrong_person' || intent === 'not_now' ? 'dead' : 'replied';
 
     db.prepare(`
       UPDATE leads SET status=?, last_contact=datetime('now') WHERE email=?
