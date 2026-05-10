@@ -4,7 +4,7 @@ const Anthropic = require('@anthropic-ai/sdk');
 const { Resend } = require('resend');
 const busboy = require('busboy');
 const db = require('./db');
-const { SYSTEM, inboundPrompt, followupPrompt, replyPrompt } = require('./prompts');
+const { buildSystem, inboundPrompt, followupPrompt, replyPrompt, ACTIVE_PROFILE } = require('./prompts');
 
 const app = express();
 app.use(express.json());
@@ -18,7 +18,7 @@ async function callClaude(userPrompt) {
   const msg = await claude.messages.create({
     model: 'claude-opus-4-5',
     max_tokens: 300,
-    system: SYSTEM,
+    system: buildSystem(ACTIVE_PROFILE),
     messages: [{ role: 'user', content: userPrompt }]
   });
   return msg.content[0].text;
