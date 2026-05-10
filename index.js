@@ -9,6 +9,7 @@ const { SYSTEM, inboundPrompt, followupPrompt, replyPrompt } = require('./prompt
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -48,8 +49,6 @@ function parseForm(req) {
     }
   });
 }
-
-app.use(express.static('public'));
 
 app.post('/lead', async (req, res) => {
   const fields = await parseForm(req);
