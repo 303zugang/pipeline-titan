@@ -49,9 +49,7 @@ function parseForm(req) {
   });
 }
 
-app.get('/', (req, res) => {
-  res.json({ status: 'PipelineTitan is running' });
-});
+app.use(express.static('public'));
 
 app.post('/lead', async (req, res) => {
   const fields = await parseForm(req);
