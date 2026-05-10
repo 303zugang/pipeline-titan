@@ -66,7 +66,7 @@ h1 em{font-style:italic;color:var(--muted)}
 .s-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:400;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem}
 .s-title em{font-style:italic;color:var(--muted)}
 
-.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
 .prob-body{font-size:0.95rem;color:#444;line-height:1.75}
 .prob-body p{margin-bottom:1rem}
 .pain-list{display:flex;flex-direction:column;gap:0.65rem}
@@ -81,7 +81,8 @@ h1 em{font-style:italic;color:var(--muted)}
 
 .ben-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:3rem}
 .ben{background:var(--white);padding:2rem}
-.ben-i{font-size:1.1rem;margin-bottom:0.85rem}
+.ben-i{font-size:0.7rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.85rem;display:flex;align-items:center;gap:0.5rem}
+.ben-i::before{content:'';width:20px;height:1px;background:var(--muted)}
 .ben h3{font-size:0.88rem;font-weight:500;color:var(--ink);margin-bottom:0.4rem}
 .ben p{font-size:0.8rem;color:var(--muted);line-height:1.6}
 
@@ -171,7 +172,7 @@ footer a:hover{color:var(--ink)}
     <li><a href="#demo">Live demo</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
-  <a href="#demo" class="nav-cta">Watch 4-Min Demo</a>
+  <a href="#demo" class="nav-cta">Test 4-Min Demo</a>
 </nav>
 
 <!-- HERO -->
@@ -182,8 +183,7 @@ footer a:hover{color:var(--ink)}
     <h1>Never miss<br>a lead <em>again.</em></h1>
     <p class="hero-sub">PipelineTitan responds instantly, follows up automatically, and helps book more meetings — 24/7.</p>
     <div class="hero-actions">
-      <a href="#demo" class="btn-dark">Watch 4-Min Demo</a>
-      <a href="#pricing" class="btn-outline">Start PipelineTitan</a>
+      <a href="#demo" class="btn-dark">Test 4-Min Demo</a>
     </div>
     <div class="hero-proof">
       <div class="proof-avatars">
@@ -198,12 +198,12 @@ footer a:hover{color:var(--ink)}
     <div class="mock">
       <div class="mock-bar">
         <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-        <div class="mock-url">kelly@pipelinetitan.com</div>
+        <div class="mock-url">discover@pipelinetitan.com</div>
       </div>
       <div class="mock-body">
         <div class="email-card">
           <div class="email-meta">
-            <strong>From:</strong> kelly@pipelinetitan.com &nbsp;·&nbsp;
+            <strong>From:</strong> discover@pipelinetitan.com &nbsp;·&nbsp;
             <strong>To:</strong> lead@prospect.com<br>
             <strong>Subject:</strong> Re: your inquiry &nbsp;·&nbsp;
             <span class="badge-sent">✓ Delivered in 42 seconds</span>
@@ -292,22 +292,22 @@ footer a:hover{color:var(--ink)}
     <h2 class="s-title">Built for <em>responsiveness.</em></h2>
     <div class="ben-grid">
       <div class="ben">
-        <div class="ben-i">⚡</div>
+        <div class="ben-i">01</div>
         <h3>Instant lead response</h3>
         <p>Engage new leads in seconds, not hours. Speed-to-lead is one of the highest-leverage variables in sales.</p>
       </div>
       <div class="ben">
-        <div class="ben-i">🔁</div>
+        <div class="ben-i">02</div>
         <h3>Consistent follow-up</h3>
         <p>No more dropped conversations or forgotten inquiries. Three perfectly timed follow-ups, automatically.</p>
       </div>
       <div class="ben">
-        <div class="ben-i">🌐</div>
+        <div class="ben-i">03</div>
         <h3>24/7 coverage</h3>
         <p>PipelineTitan keeps working after hours, on weekends, and through your busiest days.</p>
       </div>
       <div class="ben">
-        <div class="ben-i">🚀</div>
+        <div class="ben-i">04</div>
         <h3>Simple setup</h3>
         <p>Get live quickly without rebuilding your sales process. Connected to your calendar and email from day one.</p>
       </div>
@@ -349,24 +349,26 @@ footer a:hover{color:var(--ink)}
     <div class="pricing-header">
       <p class="s-label">Pricing</p>
       <h2 class="s-title">Simple pricing.<br><em>Aligned with results.</em></h2>
-      <p>PipelineTitan keeps upfront pricing simple and adds performance-based pricing tied to revenue opportunities generated through the system.</p>
+      <p>PipelineTitan is built as a partnership. When your team closes more business, it means the system is generating qualified opportunities that convert. We keep our monthly optimization service simple and affordable, and work on performance-based pricing tied to revenue opportunities generated through the system. Your success = our success.</p>
     </div>
 
     <!-- Onboarding fee callout -->
-    <div style="max-width:760px;margin:0 auto 2rem;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <div style="max-width:760px;margin:0 auto 1.5rem;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
       <div>
-        <p style="font-size:0.72rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem">Required for all plans</p>
+        <p style="font-size:0.72rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem">Start today</p>
         <p style="font-size:1rem;font-weight:500;color:var(--ink)">Configuration &amp; Onboarding — <span style="color:var(--ink)">$750</span> <span style="font-size:0.82rem;font-weight:300;color:var(--muted)">one-time</span></p>
         <p style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">Covers full system setup, domain configuration, AI prompt tuning, and go-live support.</p>
       </div>
       <a href="https://buy.stripe.com/fZu9AT0tieA7fwe77R1Fe04" class="btn-dark" style="white-space:nowrap">Get Started — $750</a>
     </div>
 
+    <!-- Commitment note -->
+    <p style="max-width:760px;margin:0 auto 2rem;text-align:center;font-size:0.82rem;color:var(--muted);font-family:var(--mono)">No monthly or annual commitment is due today. Once Configuration is complete, your monthly or annual service will begin.</p>
+
     <div class="pcards">
       <div class="pcard">
         <p class="pplan">Monthly</p>
         <div><span class="pamount">$400</span><span class="pperiod">/mo</span></div>
-        <p class="psetup">After one-time $750 configuration fee</p>
         <div class="pperf">+ 10% performance-based pricing on PipelineTitan-sourced revenue opportunities</div>
         <ul class="pfeats">
           <li>Instant lead response</li>
@@ -375,13 +377,11 @@ footer a:hover{color:var(--ink)}
           <li>Booking link integration</li>
           <li>Live within days</li>
         </ul>
-        <a href="https://buy.stripe.com/9B65kD2BqeA73Nwbo71Fe03" class="btn-outline">Choose Monthly</a>
       </div>
       <div class="pcard best">
         <div class="pbadge">Save 12.5%</div>
         <p class="pplan">Annual</p>
-        <div><span class="pamount">$4,200</span><span class="pperiod">/yr</span></div>
-        <p class="psetup">$350/mo effective · after one-time $750 configuration fee</p>
+        <div><span class="pamount">$4,200</span><span class="pperiod">/yr ($350/mo pre-paid)</span></div>
         <div class="pperf">+ 10% performance-based pricing on PipelineTitan-sourced revenue opportunities</div>
         <ul class="pfeats">
           <li>Instant lead response</li>
@@ -390,10 +390,8 @@ footer a:hover{color:var(--ink)}
           <li>Booking link integration</li>
           <li>Live within days</li>
         </ul>
-        <a href="https://buy.stripe.com/aFa00j0ti77F0Bk77R1Fe02" class="btn-dark">Choose Annual</a>
       </div>
     </div>
-    <p class="pricing-note">Not sure yet? <a href="#demo">Run the 4-minute demo first →</a></p>
   </div>
 </section>
 
@@ -406,16 +404,15 @@ footer a:hover{color:var(--ink)}
     <h2 class="s-title">Every missed lead is<br>a missed opportunity.</h2>
     <p>PipelineTitan helps your business respond faster, follow up consistently, and book more meetings — without adding operational complexity.</p>
     <div class="final-btns">
-      <a href="#pricing" class="btn-dark">Start PipelineTitan</a>
-      <a href="#demo" class="btn-outline">Book a Demo</a>
+      <a href="https://buy.stripe.com/fZu9AT0tieA7fwe77R1Fe04" class="btn-dark">Start PipelineTitan — $750</a>
+      <a href="https://calendly.com/jkellypeterson/30min" class="btn-outline">Schedule A Demo With PipelineTitan</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <span class="foot-logo">PipelineTitan</span>
   <p>© 2026 PipelineTitan. All rights reserved.</p>
-  <a href="mailto:kelly@pipelinetitan.com">kelly@pipelinetitan.com</a>
+  <a href="mailto:discover@pipelinetitan.com">discover@pipelinetitan.com</a>
 </footer>
 
 </body>
