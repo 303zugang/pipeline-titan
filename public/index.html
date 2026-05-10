@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PipelineTitan — Never Miss a Lead Again</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0f0f0f;--white:#ffffff;--off:#f7f6f3;
+  --subtle:#f0efe9;--border:#e4e2db;--muted:#888880;
+  --green:#16a34a;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased}
+
+nav{position:sticky;top:0;z-index:99;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 4rem;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.nav-logo{font-weight:500;font-size:1rem;color:var(--ink);text-decoration:none}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:0.875rem;transition:color 0.15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:var(--white);padding:0.6rem 1.4rem;border-radius:6px;font-size:0.82rem;font-weight:500;text-decoration:none;transition:opacity 0.15s}
+.nav-cta:hover{opacity:0.8}
+
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1100px;margin:0 auto;padding:7rem 4rem 5rem}
+.hero-tag{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.75rem;font-family:var(--mono);color:var(--green);background:#f0fdf4;border:1px solid #bbf7d0;padding:0.3rem 0.8rem;border-radius:99px;margin-bottom:1.75rem}
+.hero-tag::before{content:'●';font-size:0.5rem}
+h1{font-family:var(--serif);font-size:clamp(2.8rem,4.5vw,4rem);font-weight:400;line-height:1.08;letter-spacing:-0.02em;margin-bottom:1.4rem}
+h1 em{font-style:italic;color:var(--muted)}
+.hero-sub{font-size:1.05rem;color:#444;line-height:1.7;max-width:460px;margin-bottom:2.5rem}
+.hero-actions{display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.btn-dark{background:var(--ink);color:var(--white);padding:0.85rem 1.8rem;border-radius:6px;font-size:0.875rem;font-weight:500;text-decoration:none;display:inline-block;transition:opacity 0.15s;border:none;cursor:pointer;font-family:var(--sans)}
+.btn-dark:hover{opacity:0.8}
+.btn-outline{border:1px solid var(--border);color:var(--ink);padding:0.85rem 1.8rem;border-radius:6px;font-size:0.875rem;font-weight:400;text-decoration:none;display:inline-block;transition:border-color 0.15s}
+.btn-outline:hover{border-color:var(--ink)}
+.hero-proof{display:flex;align-items:center;gap:0.75rem;font-size:0.78rem;color:var(--muted)}
+.proof-avatars{display:flex}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--subtle);border:2px solid var(--white);margin-left:-6px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:500;color:var(--muted)}
+.avatar:first-child{margin-left:0}
+
+.mock{background:var(--off);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.mock-bar{padding:0.7rem 1.1rem;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.45rem}
+.dot{width:10px;height:10px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
+.mock-url{flex:1;background:var(--subtle);border-radius:4px;padding:0.3rem 0.75rem;font-size:0.7rem;font-family:var(--mono);color:var(--muted);text-align:center}
+.mock-body{padding:1.25rem}
+.email-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:1.1rem;font-size:0.8rem;line-height:1.6}
+.email-meta{font-size:0.7rem;font-family:var(--mono);color:var(--muted);padding-bottom:0.7rem;margin-bottom:0.7rem;border-bottom:1px solid var(--border)}
+.email-meta strong{color:var(--ink)}
+.badge-sent{color:var(--green)}
+.email-body p{margin-bottom:0.5rem;color:#333}
+.email-link{color:var(--ink);font-weight:500;text-decoration:underline;text-underline-offset:2px}
+.tl-row{display:flex;gap:0.5rem;margin-top:0.9rem}
+.tl-pill{flex:1;background:var(--white);border:1px solid var(--border);border-radius:6px;padding:0.55rem 0.4rem;text-align:center}
+.tl-t{font-size:0.67rem;font-family:var(--mono);color:var(--green)}
+.tl-l{font-size:0.67rem;color:var(--muted);margin-top:1px}
+
+.divider{border:none;border-top:1px solid var(--border)}
+.section{padding:5.5rem 4rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.s-label{font-size:0.72rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem}
+.s-title{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:400;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem}
+.s-title em{font-style:italic;color:var(--muted)}
+
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.prob-body{font-size:0.95rem;color:#444;line-height:1.75}
+.prob-body p{margin-bottom:1rem}
+.pain-list{display:flex;flex-direction:column;gap:0.65rem}
+.pain-item{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;font-size:0.85rem;color:#444;display:flex;align-items:flex-start;gap:0.65rem}
+.pain-x{color:#dc2626;flex-shrink:0;margin-top:1px}
+
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:3rem}
+.step{background:var(--white);padding:2rem 1.75rem}
+.step-n{font-family:var(--mono);font-size:0.7rem;color:var(--muted);margin-bottom:1.1rem;letter-spacing:0.08em}
+.step h3{font-size:0.88rem;font-weight:500;margin-bottom:0.5rem;color:var(--ink)}
+.step p{font-size:0.8rem;color:var(--muted);line-height:1.6}
+
+.ben-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:3rem}
+.ben{background:var(--white);padding:2rem}
+.ben-i{font-size:1.1rem;margin-bottom:0.85rem}
+.ben h3{font-size:0.88rem;font-weight:500;color:var(--ink);margin-bottom:0.4rem}
+.ben p{font-size:0.8rem;color:var(--muted);line-height:1.6}
+
+.demo-dark{background:var(--ink);color:var(--white)}
+.demo-center{max-width:820px;margin:0 auto;text-align:center}
+.demo-center .s-label{color:rgba(255,255,255,0.3)}
+.demo-center .s-title{color:var(--white)}
+.demo-desc{font-size:0.95rem;color:rgba(255,255,255,0.5);max-width:480px;margin:0 auto 2.5rem}
+.demo-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:2.5rem}
+.dtl{display:flex;justify-content:space-between;margin-bottom:2rem;position:relative}
+.dtl::before{content:'';position:absolute;top:9px;left:10%;right:10%;height:1px;background:rgba(255,255,255,0.1)}
+.dtl-item{text-align:center;flex:1;position:relative;padding-top:28px}
+.dtl-dot{position:absolute;top:0;left:50%;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.15)}
+.dtl-dot.on{background:#16a34a}
+.dtl-t{font-size:0.68rem;font-family:var(--mono);color:rgba(255,255,255,0.4)}
+.dtl-l{font-size:0.68rem;color:rgba(255,255,255,0.28);margin-top:2px}
+.dform{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;text-align:left}
+.dform input,.dform textarea{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:0.85rem 1rem;color:var(--white);font-family:var(--sans);font-size:0.875rem;font-weight:300;width:100%;transition:border-color 0.15s}
+.dform input:focus,.dform textarea:focus{outline:none;border-color:rgba(255,255,255,0.4)}
+.dform input::placeholder,.dform textarea::placeholder{color:rgba(255,255,255,0.2)}
+.dform textarea{grid-column:1/-1;height:80px;resize:none}
+.dform .dsub{grid-column:1/-1;background:var(--white);color:var(--ink);padding:1rem;border-radius:6px;font-size:0.875rem;font-weight:500;border:none;cursor:pointer;font-family:var(--sans);transition:opacity 0.15s}
+.dform .dsub:hover{opacity:0.85}
+.demo-note{margin-top:1.1rem;font-size:0.72rem;font-family:var(--mono);color:rgba(255,255,255,0.22)}
+
+.pricing-bg{background:var(--off)}
+.pricing-header{text-align:center;max-width:540px;margin:0 auto 3.5rem}
+.pricing-header p{font-size:0.9rem;color:var(--muted);margin-top:0.75rem}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:760px;margin:0 auto}
+.pcard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:2.25rem;position:relative}
+.pcard.best{border-color:var(--ink);border-width:2px}
+.pbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--white);font-size:0.67rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 1rem;border-radius:99px;white-space:nowrap}
+.pplan{font-size:0.7rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.5rem}
+.pamount{font-family:var(--serif);font-size:3rem;font-weight:400;line-height:1;color:var(--ink)}
+.pperiod{font-size:0.82rem;color:var(--muted)}
+.psetup{font-size:0.78rem;color:var(--muted);margin:0.4rem 0 0.9rem}
+.pperf{font-size:0.76rem;font-family:var(--mono);color:var(--green);background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:0.6rem 0.85rem;margin-bottom:1.75rem;line-height:1.5}
+.pfeats{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:2rem}
+.pfeats li{font-size:0.83rem;color:#444;display:flex;align-items:flex-start;gap:0.55rem}
+.pfeats li::before{content:'✓';color:var(--green);font-weight:500;flex-shrink:0;margin-top:1px}
+.pcard .btn-dark,.pcard .btn-outline{display:block;text-align:center;width:100%}
+.pricing-note{text-align:center;font-size:0.78rem;font-family:var(--mono);color:var(--muted);margin-top:2rem}
+.pricing-note a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+
+.final{padding:7rem 4rem;text-align:center;border-top:1px solid var(--border)}
+.final-inner{max-width:600px;margin:0 auto}
+.final .s-title{font-size:clamp(2.2rem,4vw,3.2rem);margin-bottom:1rem}
+.final p{font-size:0.95rem;color:var(--muted);margin-bottom:2.5rem;line-height:1.7}
+.final-btns{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+
+footer{border-top:1px solid var(--border);padding:1.75rem 4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.foot-logo{font-weight:500;font-size:0.9rem;color:var(--ink)}
+footer p{font-size:0.78rem;color:var(--muted)}
+footer a{color:var(--muted);text-decoration:none;font-size:0.78rem}
+footer a:hover{color:var(--ink)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero-left>*{animation:fadeUp 0.5s ease both}
+.hero-left>*:nth-child(1){animation-delay:.05s}
+.hero-left>*:nth-child(2){animation-delay:.12s}
+.hero-left>*:nth-child(3){animation-delay:.19s}
+.hero-left>*:nth-child(4){animation-delay:.26s}
+.hero-left>*:nth-child(5){animation-delay:.33s}
+.hero-right{animation:fadeUp 0.5s 0.22s ease both}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr;padding:5rem 1.5rem 3rem;gap:2.5rem}
+  .section{padding:4rem 1.5rem}
+  .problem-grid{grid-template-columns:1fr;gap:2.5rem}
+  .steps-grid{grid-template-columns:1fr 1fr}
+  .ben-grid{grid-template-columns:1fr}
+  .pcards{grid-template-columns:1fr}
+  .dform{grid-template-columns:1fr}
+  .final{padding:5rem 1.5rem}
+  footer{padding:1.5rem;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">PipelineTitan</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#demo">Live demo</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#demo" class="nav-cta">Watch 4-Min Demo</a>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1100px;margin:0 auto;padding:0 4rem">
+<div class="hero" style="padding:7rem 0 5rem;max-width:none">
+  <div class="hero-left">
+    <div class="hero-tag">Always-on lead response</div>
+    <h1>Never miss<br>a lead <em>again.</em></h1>
+    <p class="hero-sub">PipelineTitan responds instantly, follows up automatically, and helps book more meetings — 24/7.</p>
+    <div class="hero-actions">
+      <a href="#demo" class="btn-dark">Watch 4-Min Demo</a>
+      <a href="#pricing" class="btn-outline">Start PipelineTitan</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-avatars">
+        <div class="avatar">KP</div>
+        <div class="avatar">JR</div>
+        <div class="avatar">SM</div>
+      </div>
+      <span>Responds in under 60 seconds. Every time.</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="mock">
+      <div class="mock-bar">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <div class="mock-url">kelly@pipelinetitan.com</div>
+      </div>
+      <div class="mock-body">
+        <div class="email-card">
+          <div class="email-meta">
+            <strong>From:</strong> kelly@pipelinetitan.com &nbsp;·&nbsp;
+            <strong>To:</strong> lead@prospect.com<br>
+            <strong>Subject:</strong> Re: your inquiry &nbsp;·&nbsp;
+            <span class="badge-sent">✓ Delivered in 42 seconds</span>
+          </div>
+          <div class="email-body">
+            <p>Hey Sarah,</p>
+            <p>Sounds like your team is in that spot — more leads than you can respond to fast enough. That's exactly where we help.</p>
+            <p>Worth 20 minutes to show you how it works?</p>
+            <p><a href="#" class="email-link">Grab a time here →</a></p>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-pill"><div class="tl-t">&lt;60s</div><div class="tl-l">First reply</div></div>
+          <div class="tl-pill"><div class="tl-t">Day 1</div><div class="tl-l">Follow-up</div></div>
+          <div class="tl-pill"><div class="tl-t">Day 3</div><div class="tl-l">Follow-up</div></div>
+          <div class="tl-pill"><div class="tl-t">Day 5</div><div class="tl-l">Follow-up</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="divider">
+
+<!-- PROBLEM -->
+<section class="section" style="background:var(--off)" id="problem">
+  <div class="section-inner">
+    <div class="problem-grid">
+      <div>
+        <p class="s-label">The problem</p>
+        <h2 class="s-title">Fast response<br>wins business.</h2>
+        <div class="prob-body">
+          <p>Leads often come in when teams are busy, unavailable, or focused elsewhere. The longer a lead waits, the more likely the opportunity slips away.</p>
+          <p>PipelineTitan gives every lead immediate attention and consistent follow-up, so more conversations turn into scheduled meetings.</p>
+        </div>
+      </div>
+      <div class="pain-list">
+        <div class="pain-item"><span class="pain-x">✕</span>Leads go cold while you're in meetings, on calls, or asleep</div>
+        <div class="pain-item"><span class="pain-x">✕</span>Manual follow-up is inconsistent and falls through the cracks</div>
+        <div class="pain-item"><span class="pain-x">✕</span>High-intent prospects book with whoever responds first — often a competitor</div>
+        <div class="pain-item"><span class="pain-x">✕</span>Your team spends time on outreach instead of closing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-inner">
+    <p class="s-label">How it works</p>
+    <h2 class="s-title">Simple. Fast. <em>Always on.</em></h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-n">01 —</div>
+        <h3>Lead comes in</h3>
+        <p>A prospect submits a form or inquiry from your website or landing page.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02 —</div>
+        <h3>PipelineTitan responds instantly</h3>
+        <p>The system sends a professional, human-sounding response within 60 seconds — automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03 —</div>
+        <h3>Follow-up continues automatically</h3>
+        <p>If the lead doesn't respond, PipelineTitan follows up consistently at Day 1, 3, and 5.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04 —</div>
+        <h3>Meetings get booked</h3>
+        <p>Every message guides the conversation toward a scheduled call with your booking link.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- BENEFITS -->
+<section class="section" style="background:var(--off)">
+  <div class="section-inner">
+    <p class="s-label">Why PipelineTitan</p>
+    <h2 class="s-title">Built for <em>responsiveness.</em></h2>
+    <div class="ben-grid">
+      <div class="ben">
+        <div class="ben-i">⚡</div>
+        <h3>Instant lead response</h3>
+        <p>Engage new leads in seconds, not hours. Speed-to-lead is one of the highest-leverage variables in sales.</p>
+      </div>
+      <div class="ben">
+        <div class="ben-i">🔁</div>
+        <h3>Consistent follow-up</h3>
+        <p>No more dropped conversations or forgotten inquiries. Three perfectly timed follow-ups, automatically.</p>
+      </div>
+      <div class="ben">
+        <div class="ben-i">🌐</div>
+        <h3>24/7 coverage</h3>
+        <p>PipelineTitan keeps working after hours, on weekends, and through your busiest days.</p>
+      </div>
+      <div class="ben">
+        <div class="ben-i">🚀</div>
+        <h3>Simple setup</h3>
+        <p>Get live quickly without rebuilding your sales process. Connected to your calendar and email from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DEMO -->
+<section class="section demo-dark" id="demo">
+  <div class="demo-center">
+    <p class="s-label">Live demo</p>
+    <h2 class="s-title" style="color:var(--white);margin-bottom:1rem">See PipelineTitan <em style="color:rgba(255,255,255,0.35)">in action.</em></h2>
+    <p class="demo-desc">Enter your info below. PipelineTitan responds instantly, then follows up twice — all within 4 minutes. Watch it happen in real time in your inbox.</p>
+    <div class="demo-box">
+      <div class="dtl">
+        <div class="dtl-item"><div class="dtl-dot on"></div><div class="dtl-t">0:00</div><div class="dtl-l">You submit</div></div>
+        <div class="dtl-item"><div class="dtl-dot"></div><div class="dtl-t">&lt;60s</div><div class="dtl-l">First email</div></div>
+        <div class="dtl-item"><div class="dtl-dot"></div><div class="dtl-t">2:00</div><div class="dtl-l">Follow-up #1</div></div>
+        <div class="dtl-item"><div class="dtl-dot"></div><div class="dtl-t">4:00</div><div class="dtl-l">Follow-up #2</div></div>
+      </div>
+      <form class="dform" action="https://pipeline-titan-production.up.railway.app/demo" method="POST">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <textarea name="message" placeholder="What's your biggest sales challenge?" required></textarea>
+        <button type="submit" class="dsub">Watch Demo — See It In Your Inbox →</button>
+      </form>
+      <p class="demo-note">// Three emails. Four minutes. No signup required.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRICING -->
+<section class="section pricing-bg" id="pricing">
+  <div class="section-inner">
+    <div class="pricing-header">
+      <p class="s-label">Pricing</p>
+      <h2 class="s-title">Simple pricing.<br><em>Aligned with results.</em></h2>
+      <p>PipelineTitan keeps upfront pricing simple and adds performance-based pricing tied to revenue opportunities generated through the system.</p>
+    </div>
+
+    <!-- Onboarding fee callout -->
+    <div style="max-width:760px;margin:0 auto 2rem;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div>
+        <p style="font-size:0.72rem;font-family:var(--mono);color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3rem">Required for all plans</p>
+        <p style="font-size:1rem;font-weight:500;color:var(--ink)">Configuration &amp; Onboarding — <span style="color:var(--ink)">$750</span> <span style="font-size:0.82rem;font-weight:300;color:var(--muted)">one-time</span></p>
+        <p style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem">Covers full system setup, domain configuration, AI prompt tuning, and go-live support.</p>
+      </div>
+      <a href="https://buy.stripe.com/fZu9AT0tieA7fwe77R1Fe04" class="btn-dark" style="white-space:nowrap">Get Started — $750</a>
+    </div>
+
+    <div class="pcards">
+      <div class="pcard">
+        <p class="pplan">Monthly</p>
+        <div><span class="pamount">$400</span><span class="pperiod">/mo</span></div>
+        <p class="psetup">After one-time $750 configuration fee</p>
+        <div class="pperf">+ 10% performance-based pricing on PipelineTitan-sourced revenue opportunities</div>
+        <ul class="pfeats">
+          <li>Instant lead response</li>
+          <li>Automated follow-up sequence</li>
+          <li>24/7 responsiveness</li>
+          <li>Booking link integration</li>
+          <li>Live within days</li>
+        </ul>
+        <a href="https://buy.stripe.com/9B65kD2BqeA73Nwbo71Fe03" class="btn-outline">Choose Monthly</a>
+      </div>
+      <div class="pcard best">
+        <div class="pbadge">Save 12.5%</div>
+        <p class="pplan">Annual</p>
+        <div><span class="pamount">$4,200</span><span class="pperiod">/yr</span></div>
+        <p class="psetup">$350/mo effective · after one-time $750 configuration fee</p>
+        <div class="pperf">+ 10% performance-based pricing on PipelineTitan-sourced revenue opportunities</div>
+        <ul class="pfeats">
+          <li>Instant lead response</li>
+          <li>Automated follow-up sequence</li>
+          <li>24/7 responsiveness</li>
+          <li>Booking link integration</li>
+          <li>Live within days</li>
+        </ul>
+        <a href="https://buy.stripe.com/aFa00j0ti77F0Bk77R1Fe02" class="btn-dark">Choose Annual</a>
+      </div>
+    </div>
+    <p class="pricing-note">Not sure yet? <a href="#demo">Run the 4-minute demo first →</a></p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="final-inner">
+    <p class="s-label" style="text-align:center">Get started</p>
+    <h2 class="s-title">Every missed lead is<br>a missed opportunity.</h2>
+    <p>PipelineTitan helps your business respond faster, follow up consistently, and book more meetings — without adding operational complexity.</p>
+    <div class="final-btns">
+      <a href="#pricing" class="btn-dark">Start PipelineTitan</a>
+      <a href="#demo" class="btn-outline">Book a Demo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="foot-logo">PipelineTitan</span>
+  <p>© 2026 PipelineTitan. All rights reserved.</p>
+  <a href="mailto:kelly@pipelinetitan.com">kelly@pipelinetitan.com</a>
+</footer>
+
+</body>
+</html>
