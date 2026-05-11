@@ -235,6 +235,149 @@ app.patch('/admin/leads/:id', requireAdminKey, async (req, res) => {
   }
 });
 
+app.get('/admin/transcripts-ui', requireAdminKey, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT t.id, t.lead_email, t.direction, t.email_type, t.subject, t.body,
+             t.sent_at, t.awkward_flag, t.needs_improvement, t.operator_note,
+             l.name AS lead_name, l.message AS original_message,
+             l.status AS lead_status, l.booked, l.objection_type,
+             l.created_at AS lead_created_at, l.id AS lead_id
+      FROM transcripts t
+      LEFT JOIN leads l ON l.id = t.lead_id
+      ORDER BY t.sent_at DESC
+    `);
+
+    const rows = result.rows;
+
+    const cards = rows.map(r => {
+      const sentAt = r.sent_at ? new Date(r.sent_at).toLocaleString() : '—';
+      const leadCreated = r.lead_created_at ? new Date(r.lead_created_at).toLocaleString() : '—';
+      const body = (r.body || '').replace(/\n/g, '<br>');
+      const original = (r.original_message || '').replace(/\n/g, '<br>');
+      const awkward = r.awkward_flag ? 'checked' : '';
+      const improvement = r.needs_improvement ? 'checked' : '';
+      const booked = r.booked ? 'checked' : '';
+      const key = res.req.query.key || '';
+
+      return `
+        <div class="card ${r.awkward_flag ? 'flag-awkward' : ''} ${r.needs_improvement ? 'flag-improve' : ''}">
+          <div class="card-header">
+            <div class="lead-info">
+              <span class="lead-name">${r.lead_name || '—'}</span>
+              <span class="lead-email">${r.lead_email || '—'}</span>
+            </div>
+            <div class="meta">
+              <span class="badge badge-${r.lead_status}">${r.lead_status || '—'}</span>
+              <span class="badge badge-type">${r.email_type || '—'}</span>
+              ${r.booked ? '<span class="badge badge-booked">BOOKED</span>' : ''}
+              ${r.awkward_flag ? '<span class="badge badge-awkward">⚠ Awkward</span>' : ''}
+              ${r.needs_improvement ? '<span class="badge badge-improve">✎ Needs Work</span>' : ''}
+            </div>
+          </div>
+
+          <div class="timestamps">
+            Lead created: ${leadCreated} &nbsp;|&nbsp; Email sent: ${sentAt}
+          </div>
+
+          <div class="section-label">Original message from lead</div>
+          <div class="original-message">${original}</div>
+
+          <div class="section-label">AI email sent — ${r.subject || '(no subject)'}</div>
+          <div class="email-body">${body}</div>
+
+          <form method="POST" action="/admin/transcripts-ui/${r.id}?key=${key}" class="flag-form">
+            <div class="form-row">
+              <label><input type="checkbox" name="awkward_flag" value="true" ${awkward} onchange="this.form.submit()"> Awkward response</label>
+              <label><input type="checkbox" name="needs_improvement" value="true" ${improvement} onchange="this.form.submit()"> Needs prompt improvement</label>
+              <label><input type="checkbox" name="booked" value="true" ${booked} onchange="this.form.submit()"> Booked</label>
+            </div>
+            <div class="form-row">
+              <select name="objection_type" onchange="this.form.submit()">
+                <option value="">Objection type</option>
+                <option value="pricing" ${r.objection_type === 'pricing' ? 'selected' : ''}>Pricing</option>
+                <option value="timing" ${r.objection_type === 'timing' ? 'selected' : ''}>Timing</option>
+                <option value="not_decision_maker" ${r.objection_type === 'not_decision_maker' ? 'selected' : ''}>Not decision maker</option>
+                <option value="not_interested" ${r.objection_type === 'not_interested' ? 'selected' : ''}>Not interested</option>
+                <option value="wrong_person" ${r.objection_type === 'wrong_person' ? 'selected' : ''}>Wrong person</option>
+                <option value="no_response" ${r.objection_type === 'no_response' ? 'selected' : ''}>No response</option>
+              </select>
+            </div>
+            <div class="form-row notes-row">
+              <textarea name="operator_note" placeholder="Operator notes...">${r.operator_note || ''}</textarea>
+              <button type="submit">Save note</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }).join('');
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PipelineTitan — Transcript Review</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e0e0e0; padding: 24px 16px; }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #fff; }
+    .subtitle { font-size: 13px; color: #666; margin-bottom: 24px; }
+    .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; margin-bottom: 20px; max-width: 860px; }
+    .card.flag-awkward { border-left: 3px solid #e05c5c; }
+    .card.flag-improve { border-left: 3px solid #e0a030; }
+    .card.flag-awkward.flag-improve { border-left: 3px solid #9b59b6; }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .lead-info { display: flex; flex-direction: column; gap: 2px; }
+    .lead-name { font-size: 16px; font-weight: 600; color: #fff; }
+    .lead-email { font-size: 13px; color: #888; }
+    .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge-contacted { background: #1e3a5f; color: #5ba3e0; }
+    .badge-replied { background: #1e4a2a; color: #5be08a; }
+    .badge-dead { background: #3a1e1e; color: #e05c5c; }
+    .badge-booked { background: #2a4a1e; color: #8be05c; }
+    .badge-demo { background: #2a2a1e; color: #e0d05c; }
+    .badge-new { background: #2a2a2a; color: #888; }
+    .badge-type { background: #222; color: #aaa; }
+    .badge-awkward { background: #3a1e1e; color: #e05c5c; }
+    .badge-improve { background: #3a2a1e; color: #e0a030; }
+    .timestamps { font-size: 12px; color: #555; margin-bottom: 14px; }
+    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #555; margin-bottom: 6px; margin-top: 14px; }
+    .original-message { font-size: 13px; color: #aaa; background: #141414; border: 1px solid #222; border-radius: 4px; padding: 10px 12px; line-height: 1.6; }
+    .email-body { font-size: 14px; color: #ddd; background: #141414; border: 1px solid #2a2a2a; border-radius: 4px; padding: 14px; line-height: 1.7; white-space: pre-wrap; }
+    .flag-form { margin-top: 16px; border-top: 1px solid #222; padding-top: 14px; }
+    .form-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 10px; }
+    .form-row label { font-size: 13px; color: #aaa; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .form-row input[type=checkbox] { width: 14px; height: 14px; cursor: pointer; accent-color: #5ba3e0; }
+    .form-row select { background: #111; border: 1px solid #333; color: #ccc; padding: 5px 10px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+    .notes-row { align-items: flex-end; }
+    textarea { background: #111; border: 1px solid #333; color: #ccc; padding: 8px 10px; border-radius: 4px; font-size: 13px; width: 100%; max-width: 540px; min-height: 60px; resize: vertical; font-family: inherit; }
+    button { background: #1e3a5f; color: #5ba3e0; border: 1px solid #2a5a8f; padding: 7px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+    button:hover { background: #2a4a7a; }
+    .empty { color: #555; font-size: 14px; padding: 40px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>PipelineTitan — Transcript Review</h1>
+  <p class="subtitle">${rows.length} email${rows.length !== 1 ? 's' : ''} on record &nbsp;|&nbsp; Internal operator view</p>
+  ${rows.length === 0 ? '<div class="empty">No transcripts yet. Send a test lead to generate one.</div>' : cards}
+</body>
+</html>`;
+
+    res.send(html);
+  } catch (err) {
+    console.error('Transcripts UI error:', err);
+    res.status(500).send('Internal error');
+  }
+});
+
+app.post('/admin/transcripts-ui/:id', requireAdminKey, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const key = req.query.key || '';
+    const { awkward_flag, needs_improvement, booked, objection_type, operator_note } = req.b
+
 app.get('/admin/transcripts', requireAdminKey, async (req, res) => {
   try {
     const result = await pool.query(`
