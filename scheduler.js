@@ -1,6 +1,6 @@
 require('dotenv').config();
 const cron = require('node-cron');
-const db = require('./db');
+const { pool } = require('./db');
 const { callClaude, sendEmail } = require('./index');
 const { followupPrompt } = require('./prompts');
 
@@ -11,11 +11,12 @@ cron.schedule('0 * * * *', async () => {
 
   const now = new Date();
 
-  const leads = db.prepare(`
+  const result = await pool.query(`
     SELECT * FROM leads
     WHERE status IN ('contacted', 'replied')
     AND followup_count < 3
-  `).all();
+  `);
+  const leads = result.rows;
 
   for (const lead of leads) {
     const lastContact = new Date(lead.last_contact);
@@ -25,16 +26,25 @@ cron.schedule('0 * * * *', async () => {
 
     if (daysSince >= nextAt) {
       const count = lead.followup_count + 1;
+      const emailTypes = ['followup_1', 'followup_2', 'followup_3'];
+      const subjects = ['Checking in', 'Checking in', 'One last thought'];
+      const subject = subjects[count - 1] || 'Checking in';
+      const emailType = emailTypes[count - 1] || 'followup_1';
 
       try {
         const message = await callClaude(followupPrompt(lead.name, count));
-        await sendEmail(lead.email, `Checking in`, message);
+        await sendEmail(lead.email, subject, message);
 
-        db.prepare(`
-          UPDATE leads
-          SET followup_count=?, last_contact=datetime('now')
-          WHERE id=?
-        `).run(count, lead.id);
+        await pool.query(
+          `UPDATE leads SET followup_count=$1, last_contact=NOW() WHERE id=$2`,
+          [count, lead.id]
+        );
+
+        await pool.query(
+          `INSERT INTO transcripts (lead_id, lead_email, direction, email_type, subject, body)
+           VALUES ($1, $2, 'outbound', $3, $4, $5)`,
+          [lead.id, lead.email, emailType, subject, message]
+        );
 
         console.log(`Follow-up #${count} sent to ${lead.name} <${lead.email}>`);
       } catch (err) {
