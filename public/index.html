@@ -330,11 +330,11 @@ footer a:hover{color:var(--ink)}
         <div class="dtl-item"><div class="dtl-dot"></div><div class="dtl-t">2:00</div><div class="dtl-l">Follow-up #1</div></div>
         <div class="dtl-item"><div class="dtl-dot"></div><div class="dtl-t">4:00</div><div class="dtl-l">Follow-up #2</div></div>
       </div>
-      <form class="dform" action="https://pipeline-titan-production.up.railway.app/demo" method="POST">
+      <form class="dform" id="demo-form">
         <input type="text" name="name" placeholder="Your name" required>
         <input type="email" name="email" placeholder="Your email" required>
         <textarea name="message" placeholder="What's your biggest sales challenge?" required></textarea>
-        <button type="submit" class="dsub">Watch Demo — See It In Your Inbox →</button>
+        <button type="submit" class="dsub" id="demo-submit">Watch Demo — See It In Your Inbox →</button>
       </form>
       <p class="demo-note">// Three emails. Four minutes. No signup required.</p>
     </div>
@@ -412,6 +412,64 @@ footer a:hover{color:var(--ink)}
   <p>© 2026 PipelineTitan. All rights reserved.</p>
   <a href="mailto:discover@pipelinetitan.com">discover@pipelinetitan.com</a>
 </footer>
+
+<!-- Demo Success Overlay -->
+<div id="demo-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:9999;align-items:center;justify-content:center;padding:1.5rem">
+  <div style="background:#fff;border-radius:14px;padding:3rem 2.5rem;max-width:460px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.35);position:relative">
+    <div style="width:52px;height:52px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:1.4rem">✓</div>
+    <h2 style="font-family:'Instrument Serif',Georgia,serif;font-size:1.75rem;font-weight:400;line-height:1.15;margin-bottom:0.85rem;color:#0f0f0f">Check your inbox.</h2>
+    <p style="font-size:0.92rem;color:#555;line-height:1.65;margin-bottom:0.6rem">PipelineTitan just sent your first AI response. Two more follow-ups are on the way — watch the full sequence land in real time.</p>
+    <p style="font-size:0.8rem;font-family:'DM Mono',monospace;color:#aaa;margin-bottom:2rem">// Response #1 arrives in under 60 seconds.</p>
+    <a href="https://buy.stripe.com/fZu9AT0tieA7fwe77R1Fe04" style="display:block;background:#0f0f0f;color:#fff;padding:0.95rem 1.5rem;border-radius:7px;font-size:0.88rem;font-weight:500;text-decoration:none;margin-bottom:0.85rem;font-family:'DM Sans',sans-serif;transition:opacity 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Ready to put this to work? Get Started — $750</a>
+    <a href="https://calendly.com/jkellypeterson/30min" style="display:block;border:1px solid #e4e2db;color:#0f0f0f;padding:0.95rem 1.5rem;border-radius:7px;font-size:0.88rem;font-weight:400;text-decoration:none;margin-bottom:1.25rem;font-family:'DM Sans',sans-serif">Schedule a call with Kelly instead</a>
+    <button id="demo-overlay-close" style="background:none;border:none;color:#bbb;font-size:0.78rem;cursor:pointer;font-family:'DM Mono',monospace">close and stay on page</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var form = document.getElementById('demo-form');
+  var submitBtn = document.getElementById('demo-submit');
+  var overlay = document.getElementById('demo-overlay');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    var originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    var formData = new FormData(form);
+
+    try {
+      var res = await fetch('https://pipeline-titan-production.up.railway.app/demo', {
+        method: 'POST',
+        body: formData
+      });
+      var data = await res.json();
+      if (data.success) {
+        overlay.style.display = 'flex';
+        form.reset();
+      } else {
+        alert('Something went wrong. Please email discover@pipelinetitan.com and we\'ll sort it out.');
+      }
+    } catch (err) {
+      alert('Something went wrong. Please email discover@pipelinetitan.com and we\'ll sort it out.');
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  });
+
+  document.getElementById('demo-overlay-close').addEventListener('click', function() {
+    overlay.style.display = 'none';
+  });
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.style.display = 'none';
+  });
+})();
+</script>
 
 </body>
 </html>
