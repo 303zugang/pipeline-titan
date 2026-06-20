@@ -1,3 +1,6 @@
 node_modules
 .env
+pipeline.db.DS_Store
+CURRENT_STATE.md
 pipeline.db
+.DS_Store
