@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const { Resend } = require('resend');
@@ -23,6 +24,12 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+// ─── Content Pages ────────────────────────────────────────────────────────────
+
+app.get('/ai-sdr-for-small-business', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'ai-sdr-for-small-business.html'));
+});
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
